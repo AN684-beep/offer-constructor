@@ -38,7 +38,7 @@
     }
 
     .hero {
-      background: rgba(255,255,255,.92);
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,246,240,.92));
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
       border-radius: 32px;
@@ -151,7 +151,10 @@
       letter-spacing: -.2px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
     }
 
     .block-title:first-of-type { margin-top: 0; }
@@ -250,14 +253,59 @@
 
     .settings-box {
       background: #f8fafc;
-      border: 1px dashed var(--line);
+      border: 1px solid var(--line);
       border-radius: 18px;
       padding: 14px;
       margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
     }
 
     .settings-box.disabled {
-      opacity: .48;
+      opacity: .50;
+      filter: grayscale(.2);
+    }
+
+    .audit-note {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .audit-note strong {
+      color: var(--text);
+    }
+
+    .audit-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--soft-green);
+      color: #0b6b4b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .section-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
     }
 
     .dashboard {
@@ -481,9 +529,10 @@
     <section class="workspace">
       <aside class="panel sticky">
         <h2 class="section-title">Настройки расчета</h2>
-        <p class="section-subtitle">Поля ниже имитируют настройки, которые компания могла бы задать под свою модель компенсаций.</p>
+        <p class="section-subtitle">Собери оффер из блоков: зарплата, коэффициенты, питание и бонус.</p>
+        <div class="audit-note"><span class="audit-dot">✓</span><div><strong>Логика разделена по блокам.</strong><br>Зарплата считается отдельно, питание и бонус не попадают в среднемесячный оклад, а добавляются только в total compensation.</div></div>
 
-        <h3 class="block-title">1. Зарплата <span class="pill">обязательно</span></h3>
+        <h3 class="block-title"><span>1. Зарплата</span><span class="section-chip">обязательно</span></h3>
         <div class="mode-switch">
           <button class="active" type="button" data-mode="gross">Gross → Net</button>
           <button type="button" data-mode="net">Net → Gross</button>
@@ -494,7 +543,7 @@
           <input id="salary" type="text" inputmode="numeric" value="100 000" />
         </div>
 
-        <h3 class="block-title">2. Коэффициенты <span class="pill">опционально</span></h3>
+        <h3 class="block-title"><span>2. Коэффициенты</span><span class="section-chip">опционально</span></h3>
         <div class="field">
           <label for="coeffEnabled"><span>Применять коэффициенты</span><small>Да / Нет</small></label>
           <select id="coeffEnabled">
@@ -536,7 +585,7 @@
           </div>
         </div>
 
-        <h3 class="block-title">3. Питание <span class="pill">опционально</span></h3>
+        <h3 class="block-title"><span>3. Питание</span><span class="section-chip">опционально</span></h3>
         <div class="field">
           <label for="foodEnabled"><span>Учитывать питание</span><small>Да / Нет</small></label>
           <select id="foodEnabled">
@@ -573,7 +622,7 @@
           </div>
         </div>
 
-        <h3 class="block-title">4. Бонус <span class="pill">опционально</span></h3>
+        <h3 class="block-title"><span>4. Бонус</span><span class="section-chip">опционально</span></h3>
         <div class="field">
           <label for="bonusEnabled"><span>Учитывать бонус</span><small>Да / Нет</small></label>
           <select id="bonusEnabled">
@@ -682,7 +731,7 @@
           <div class="result-card main"><span>Net в месяц</span><strong id="netMonthly">—</strong><small>среднее по году</small></div>
           <div class="result-card"><span>Gross без коэффициентов</span><strong id="baseGrossMonthly">—</strong><small>в месяц</small></div>
           <div class="result-card orange"><span>Общий gross</span><strong id="grossMonthly">—</strong><small>в месяц</small></div>
-          <div class="result-card"><span>НДФЛ с зарплаты</span><strong id="salaryTaxAnnual">—</strong><small>за год</small></div>
+          <div class="result-card purple"><span>Коэффициенты</span><strong id="coeffTotal">—</strong><small id="coeffHint">суммарно</small></div>
 
           <div class="result-card blue"><span>Питание gross</span><strong id="foodGrossMonthly">—</strong><small>в месяц</small></div>
           <div class="result-card blue"><span>Питание net</span><strong id="foodNetMonthly">—</strong><small>в месяц</small></div>
@@ -691,7 +740,7 @@
 
           <div class="result-card"><span>Зарплата gross в год</span><strong id="salaryGrossAnnual">—</strong><small>без питания и бонуса</small></div>
           <div class="result-card"><span>Зарплата net в год</span><strong id="salaryNetAnnual">—</strong><small>без питания и бонуса</small></div>
-          <div class="result-card main"><span>Total gross в год</span><strong id="totalGrossAnnual">—</strong><small>зарплата + питание + бонус</small></div>
+          <div class="result-card"><span>НДФЛ с зарплаты</span><strong id="salaryTaxAnnual">—</strong><small>за год</small></div>
           <div class="result-card main"><span>Total net в год</span><strong id="totalNetAnnual">—</strong><small>зарплата + питание + бонус</small></div>
         </div>
 
@@ -738,6 +787,7 @@
           <div id="tab-logic" class="tab-content">
             <h2 class="section-title">Логика расчета</h2>
             <p class="section-subtitle">Здесь простыми словами описана логика, чтобы расчет было проще проверять.</p>
+            <div class="audit-note"><span class="audit-dot">✓</span><div><strong>Проверочные точки для тестирования:</strong><br>100 000 gross без коэффициентов = 87 000 net при ставке 13%; питание 300 × 21 = 6 300 gross; бонус 8% от 1 200 000 = 96 000 gross до НДФЛ и коэффициентов.</div></div>
             <div class="info-grid">
               <article class="info-card">
                 <h3>Gross → Net</h3>
@@ -941,12 +991,7 @@
     function baseGrossFromTotalGross(totalGrossMonthly) {
       const coeff = coeffSum();
       if (els.coeffEnabled.value !== "Да" || coeff === 0) return totalGrossMonthly;
-
-      if (els.coeffMode.value === "inside") {
-        return totalGrossMonthly / (1 + coeff);
-      }
-
-      return n(els.salary);
+      return totalGrossMonthly / (1 + coeff);
     }
 
     function foodCalc() {
@@ -1148,6 +1193,8 @@
       const netMonthly = salaryNetAnnual / 12;
       const baseGrossMonthly = baseGrossFromTotalGross(grossMonthly);
       const baseGrossAnnual = baseGrossMonthly * 12;
+      const coeff = coeffSum();
+      const coeffMonthlyAmount = grossMonthly - baseGrossMonthly;
 
       const food = foodCalc();
 
@@ -1163,7 +1210,8 @@
       $("netMonthly").textContent = money(netMonthly);
       $("baseGrossMonthly").textContent = money(baseGrossMonthly);
       $("grossMonthly").textContent = money(grossMonthly);
-      $("salaryTaxAnnual").textContent = money(salaryTaxAnnual);
+      $("coeffTotal").textContent = pctFromDecimal(coeff);
+      $("coeffHint").textContent = els.coeffEnabled.value === "Да" ? `${money(coeffMonthlyAmount)} в месяц` : "не применяются";
 
       $("foodGrossMonthly").textContent = money(food.grossMonthly);
       $("foodNetMonthly").textContent = money(food.netMonthly);
@@ -1173,7 +1221,7 @@
 
       $("salaryGrossAnnual").textContent = money(salaryGrossAnnual);
       $("salaryNetAnnual").textContent = money(salaryNetAnnual);
-      $("totalGrossAnnual").textContent = money(totalGrossAnnual);
+      $("salaryTaxAnnual").textContent = money(salaryTaxAnnual);
       $("totalNetAnnual").textContent = money(totalNetAnnual);
 
       els.coeffBox.classList.toggle("disabled", els.coeffEnabled.value !== "Да");
